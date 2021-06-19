@@ -2,6 +2,7 @@ import jwtDecode from 'jwt-decode';
 
 export interface User {
   fullName: string;
+  id: string;
 }
 
 export const removeUser = () => {
@@ -14,5 +15,5 @@ export const saveUser = (token: string) => {
 
 export const getUser = (): User => {
   const token = localStorage.getItem('token');
-  return token ? jwtDecode(token) : { fullName: '' };
+  return token ? jwtDecode(token) : { fullName: '', id: '' };
 };

@@ -9,3 +9,9 @@ export enum Gender {
   Female = 2,
   Other = 3,
 }
+
+export enum RelationType {
+  Follow = 1,
+  Mute = 2,
+  Block = 3,
+}
