@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { authHeader } from '../helper/auth';
 import { Gender, Role } from '../helper/shared';
 import moment from 'moment';
+import { useParams } from 'react-router-dom';
 
 const initialState = {
   username: '',
@@ -22,21 +23,29 @@ const initialState = {
 export const useUser = (getProfile: boolean) => {
   const [user, setUser] = useState<Record<string, any>>(initialState);
 
+  const { username } = useParams<{ username: string }>();
+
   useEffect(() => {
     getSingle(getProfile);
   }, [getProfile]);
 
   const getSingle = async (getProfile: boolean) => {
+    let response;
     if (getProfile) {
-      const response = await axios.get(
+      response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/users/profile`,
         authHeader()
       );
-      setUser({
-        ...response.data,
-        birthDate: moment(response.data.birthDate).format('yyyy-MM-DD'),
-      });
+    } else {
+      response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/users/${username}`,
+        authHeader()
+      );
     }
+    setUser({
+      ...response.data,
+      birthDate: moment(response.data.birthDate).format('yyyy-MM-DD'),
+    });
   };
 
   const updateUser = async () => {

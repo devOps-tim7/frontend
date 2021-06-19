@@ -5,6 +5,8 @@ import Login from './components/Login';
 import { useEffect, useState } from 'react';
 import Register from './components/Register';
 import { getUser, User } from './helper/localStorage';
+import SearchUsers from './components/user/SearchUsers';
+import SelfProfile from './components/user/SelfProfile';
 import Profile from './components/user/Profile';
 
 const App = () => {
@@ -23,6 +25,9 @@ const App = () => {
           <Typography variant='h6' style={{ flexGrow: 1 }}>
             <Link style={{ color: 'white', textDecoration: 'none' }} to='/'>
               Home
+            </Link>
+            <Link style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }} to='/search'>
+              Search
             </Link>
           </Typography>
           {userExists && (
@@ -51,7 +56,13 @@ const App = () => {
           <Register />
         </Route>
         <Route exact path='/profile'>
+          <SelfProfile />
+        </Route>
+        <Route exact path='/users/:username'>
           <Profile />
+        </Route>
+        <Route exact path='/search'>
+          <SearchUsers />
         </Route>
       </Switch>
     </div>
