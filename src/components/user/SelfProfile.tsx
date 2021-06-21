@@ -43,7 +43,11 @@ const SelfProfile: React.FC = () => {
     }
   };
 
-  const { relations, accept, reject } = useRelations({ pending: true, toUser: true });
+  const { relations, accept, reject } = useRelations({
+    pending: true,
+    toUser: true,
+    loggedIn: true,
+  });
 
   return (
     <Container maxWidth={user.private ? 'lg' : 'sm'}>
@@ -129,12 +133,14 @@ const SelfProfile: React.FC = () => {
                 value={user.birthDate}
                 onChange={handleChange('birthDate')}
               />
-              Taggable:{' '}
+              Taggable:
               <Checkbox checked={user.taggable} onChange={handleChangeChecked('taggable')} />
               Private: <Checkbox checked={user.private} onChange={handleChangeChecked('private')} />
-              <Button variant='contained' color='primary' type='submit' style={{ marginLeft: 150 }}>
-                Submit changes
-              </Button>
+              <div style={{ textAlign: 'right', width: '100%' }}>
+                <Button type='submit' color='primary' variant='contained'>
+                  Submit changes
+                </Button>
+              </div>
               <Typography variant='body1' style={{ color: 'red' }}>
                 {error}
               </Typography>

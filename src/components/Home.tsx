@@ -1,7 +1,34 @@
-import { Container } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
+import { usePosts } from '../hooks/usePosts';
+import Post from './post/Post';
 
-const Home = () => {
-  return <Container maxWidth='md'>Home</Container>;
+interface HomeProps {
+  userExists: boolean;
+}
+
+const Home = ({ userExists }: HomeProps) => {
+  const { posts } = usePosts();
+
+  return (
+    <Container maxWidth='sm'>
+      {userExists ? (
+        <>
+          <Typography variant='h5'>Posts from users you follow</Typography>
+          {posts.map((post: any) => (
+            <Post key={post.id} post={post} large />
+          ))}
+        </>
+      ) : (
+        <>
+          <Typography variant='h5'>Welcome to Nistagram!</Typography>
+          <br />
+          <Typography variant='h5'>
+            Please create an account! As a non-registered user, you can only view public profiles.
+          </Typography>
+        </>
+      )}
+    </Container>
+  );
 };
 
 export default Home;

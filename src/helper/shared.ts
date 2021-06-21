@@ -15,3 +15,9 @@ export enum RelationType {
   Mute = 2,
   Block = 3,
 }
+
+export enum PostRelationType {
+  Like = 1,
+  Dislike = 2,
+  Save = 3,
+}
