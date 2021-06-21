@@ -6,17 +6,22 @@ import { RelationType } from '../helper/shared';
 interface RelationProps {
   pending?: boolean;
   toUser?: boolean;
+  loggedIn: boolean;
 }
 
-export const useRelations = ({ pending, toUser }: RelationProps = {}) => {
+export const useRelations = ({ pending, toUser, loggedIn }: RelationProps = { loggedIn: true }) => {
   const [relations, setRelations] = useState<Record<string, any>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getRelations();
-  }, [pending]);
+  }, [pending, loggedIn]);
 
   const getRelations = async () => {
+    if (!loggedIn) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/users/relation?pending=${pending || ''}&toUser=${

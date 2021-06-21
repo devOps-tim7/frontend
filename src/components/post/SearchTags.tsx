@@ -1,19 +1,18 @@
-import { Button, Container, Paper, TextField, Typography } from '@material-ui/core';
+import { Button, Container, Grid, TextField, Typography } from '@material-ui/core';
 import axios from 'axios';
 import { ChangeEvent, SyntheticEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getUser } from '../../helper/localStorage';
+import { authHeader } from '../../helper/auth';
+import Post from './Post';
 
-const SearchUsers = () => {
+const SearchTags = () => {
   const [username, setUsername] = useState('');
   const [results, setResults] = useState([]);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/users?username=${username.toLowerCase()}${
-        !getUser().id ? '&public=true' : ''
-      }`
+      `${process.env.REACT_APP_API_URL}/api/posts/tagged?username=${username}`,
+      authHeader()
     );
     setResults(response.data);
   };
@@ -21,7 +20,7 @@ const SearchUsers = () => {
   return (
     <Container maxWidth='md'>
       <form onSubmit={handleSubmit}>
-        <Typography variant='h5'>Search profiles</Typography>
+        <Typography variant='h5'>Search tagged posts</Typography>
         <TextField
           margin='dense'
           label='Username'
@@ -33,15 +32,13 @@ const SearchUsers = () => {
           Search
         </Button>
       </form>
-      {results.map((user: any) => (
-        <Paper key={user.id} style={{ padding: 8, marginTop: 8 }}>
-          <Link to={`/users/${user.username}`}>
-            <b>@{user.username}</b>
-          </Link>
-        </Paper>
-      ))}
+      <Grid container spacing={2}>
+        {results.map((post: any) => (
+          <Post key={post.id} post={post} />
+        ))}
+      </Grid>
     </Container>
   );
 };
 
-export default SearchUsers;
+export default SearchTags;

@@ -8,6 +8,10 @@ import { getUser, User } from './helper/localStorage';
 import SearchUsers from './components/user/SearchUsers';
 import SelfProfile from './components/user/SelfProfile';
 import Profile from './components/user/Profile';
+import NewPost from './components/post/NewPost';
+import PostDetails from './components/post/PostDetails';
+import PostRelations from './components/post/PostRelations';
+import SearchTags from './components/post/SearchTags';
 
 const App = () => {
   const [token, setToken] = useState<User | null>(null);
@@ -15,7 +19,7 @@ const App = () => {
     setToken(getUser());
   }, []);
 
-  const userExists = localStorage.getItem('token');
+  const userExists = !!token?.id;
 
   return (
     <div>
@@ -27,8 +31,37 @@ const App = () => {
               Home
             </Link>
             <Link style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }} to='/search'>
-              Search
+              Search users
             </Link>
+            <Link
+              style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+              to='/search/tags'>
+              Search tags
+            </Link>
+            {userExists && (
+              <>
+                <Link
+                  style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                  to='/newPost'>
+                  Add post
+                </Link>
+                <Link
+                  style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                  to='/posts/byRelation/like'>
+                  Liked posts
+                </Link>
+                <Link
+                  style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                  to='/posts/byRelation/dislike'>
+                  Disliked posts
+                </Link>
+                <Link
+                  style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                  to='/posts/byRelation/save'>
+                  Saved posts
+                </Link>
+              </>
+            )}
           </Typography>
           {userExists && (
             <Link style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }} to='/profile'>
@@ -41,13 +74,13 @@ const App = () => {
             </Button>
           )}
           <Button color='inherit' component={Link} to='/login'>
-            {token ? 'Logout' : 'Login'}
+            {userExists ? 'Logout' : 'Login'}
           </Button>
         </Toolbar>
       </AppBar>
       <Switch>
         <Route exact path='/'>
-          <Home />
+          <Home userExists={userExists} />
         </Route>
         <Route exact path='/login'>
           <Login setToken={setToken} />
@@ -63,6 +96,18 @@ const App = () => {
         </Route>
         <Route exact path='/search'>
           <SearchUsers />
+        </Route>
+        <Route exact path='/search/tags'>
+          <SearchTags />
+        </Route>
+        <Route exact path='/newPost'>
+          <NewPost />
+        </Route>
+        <Route exact path='/posts/:id'>
+          <PostDetails />
+        </Route>
+        <Route exact path='/posts/byRelation/:typeStr'>
+          <PostRelations />
         </Route>
       </Switch>
     </div>
