@@ -13,6 +13,7 @@ export interface PostType {
   user: {
     id: string;
     username: string;
+    private: boolean;
   };
   relations: PostRelation[];
   image: string;
@@ -40,6 +41,7 @@ const initialState = {
   user: {
     id: '',
     username: '',
+    private: false,
   },
   relations: [],
   image: '',
@@ -75,15 +77,26 @@ export const usePost = (id: string) => {
         (rel: any) => rel.subject.id === post.user.id && rel.type === RelationType.Block
       ).length > 0;
 
-    if (blockExists || blockExistsToUser) {
+    const followExists =
+      relations?.filter(
+        (rel: any) => rel.object.id === post.user.id && rel.type === RelationType.Follow
+      ).length > 0;
+
+    if (blockExists || blockExistsToUser || (followExists && post.user.private)) {
       setRedirect(true);
     }
   }, [post, blockRelations, relations]);
 
   const getPost = async (id: string) => {
+    if (!getUser().id) {
+      setRedirect(true);
+      return;
+    }
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/posts/${id}`);
-      console.log(response.data);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/posts/${id}`,
+        authHeader()
+      );
       setPost(response.data);
     } catch (error) {
       if (error.response.status === 404) {

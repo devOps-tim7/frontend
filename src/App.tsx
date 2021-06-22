@@ -12,6 +12,10 @@ import NewPost from './components/post/NewPost';
 import PostDetails from './components/post/PostDetails';
 import PostRelations from './components/post/PostRelations';
 import SearchTags from './components/post/SearchTags';
+import { Role } from './helper/shared';
+import Reports from './components/admin/Reports';
+import BecomeAgent from './components/agent/BecomeAgent';
+import AgentRequests from './components/admin/AgentRequests';
 
 const App = () => {
   const [token, setToken] = useState<User | null>(null);
@@ -26,47 +30,78 @@ const App = () => {
       <CssBaseline />
       <AppBar position='static' style={{ marginBottom: 32 }}>
         <Toolbar>
-          <Typography variant='h6' style={{ flexGrow: 1 }}>
+          <Typography style={{ flexGrow: 1 }}>
             <Link style={{ color: 'white', textDecoration: 'none' }} to='/'>
               Home
             </Link>
-            <Link style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }} to='/search'>
-              Search users
-            </Link>
-            <Link
-              style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
-              to='/search/tags'>
-              Search tags
-            </Link>
-            {userExists && (
+            {getUser().role !== Role.Admin && (
               <>
                 <Link
                   style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
-                  to='/newPost'>
-                  Add post
+                  to='/search'>
+                  Search users
                 </Link>
                 <Link
                   style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
-                  to='/posts/byRelation/like'>
-                  Liked posts
+                  to='/search/tags'>
+                  Search tags
                 </Link>
-                <Link
-                  style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
-                  to='/posts/byRelation/dislike'>
-                  Disliked posts
-                </Link>
-                <Link
-                  style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
-                  to='/posts/byRelation/save'>
-                  Saved posts
-                </Link>
+                {userExists && (
+                  <>
+                    <Link
+                      style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                      to='/newPost'>
+                      Add post
+                    </Link>
+                    <Link
+                      style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                      to='/posts/byRelation/like'>
+                      Liked posts
+                    </Link>
+                    <Link
+                      style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                      to='/posts/byRelation/dislike'>
+                      Disliked posts
+                    </Link>
+                    <Link
+                      style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                      to='/posts/byRelation/save'>
+                      Saved posts
+                    </Link>
+                  </>
+                )}
               </>
             )}
           </Typography>
-          {userExists && (
-            <Link style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }} to='/profile'>
-              {getUser().fullName}
-            </Link>
+          {userExists && getUser().role === Role.Admin && (
+            <>
+              <Link
+                style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                to='/reports'>
+                ADMIN: Reports
+              </Link>
+              <Link
+                style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                to='/agentRequests'>
+                ADMIN: Agent requests
+              </Link>
+            </>
+          )}
+          {userExists && getUser().role !== Role.Admin && (
+            <>
+              {getUser().role !== Role.Agent && (
+                <Button variant='contained' color='secondary'>
+                  <Link style={{ color: 'white', textDecoration: 'none' }} to='/becomeAgent'>
+                    BECOME AN AGENT
+                  </Link>
+                </Button>
+              )}
+              <Link
+                style={{ color: 'white', textDecoration: 'none', marginLeft: 16 }}
+                to='/profile'>
+                {getUser().fullName}
+              </Link>
+            </>
           )}
           {!userExists && (
             <Button color='inherit' component={Link} to='/register'>
@@ -108,6 +143,15 @@ const App = () => {
         </Route>
         <Route exact path='/posts/byRelation/:typeStr'>
           <PostRelations />
+        </Route>
+        <Route exact path='/reports'>
+          <Reports />
+        </Route>
+        <Route exact path='/becomeAgent'>
+          <BecomeAgent />
+        </Route>
+        <Route exact path='/agentRequests'>
+          <AgentRequests />
         </Route>
       </Switch>
     </div>

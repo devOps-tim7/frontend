@@ -21,7 +21,10 @@ export const usePosts = ({ forUser = false, id }: PostsProps = {}) => {
 
   const getPostsForUser = async (id?: string) => {
     setLoading(true);
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/posts/forUser/${id}`);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/posts/forUser/${id}`,
+      authHeader()
+    );
     setLoading(false);
     setPosts(response.data);
   };

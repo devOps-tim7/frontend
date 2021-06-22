@@ -2,7 +2,7 @@ import { Button, Container, Grid, Paper, Typography } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getUser } from '../../helper/localStorage';
-import { RelationType } from '../../helper/shared';
+import { RelationType, Role } from '../../helper/shared';
 import { usePosts } from '../../hooks/usePosts';
 import { useRelations } from '../../hooks/useRelations';
 import { useUser } from '../../hooks/useUser';
@@ -86,7 +86,7 @@ const Profile = () => {
         {user.description}
         <br />
       </Typography>
-      {!sameUser && !!getUser().id && (
+      {!sameUser && !!getUser().id && getUser().role !== Role.Admin && (
         <>
           {!followExists ? (
             <Button
@@ -110,7 +110,7 @@ const Profile = () => {
         </>
       )}
 
-      {!sameUser && followExists && !isPending && (
+      {!sameUser && followExists && !isPending && getUser().role !== Role.Admin && (
         <>
           {muteExists ? (
             <Button
@@ -133,7 +133,7 @@ const Profile = () => {
           )}
         </>
       )}
-      {!sameUser && !!getUser().id && (
+      {!sameUser && !!getUser().id && getUser().role !== Role.Admin && (
         <Button
           variant='contained'
           color='secondary'
@@ -146,7 +146,8 @@ const Profile = () => {
     </Paper>
   );
 
-  const showPosts = sameUser || !user?.private || (followExists && !isPending);
+  const showPosts =
+    getUser().role === Role.Admin || sameUser || !user?.private || (followExists && !isPending);
 
   return (
     <Container maxWidth='md'>
