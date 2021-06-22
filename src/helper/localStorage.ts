@@ -1,8 +1,10 @@
 import jwtDecode from 'jwt-decode';
+import { Role } from './shared';
 
 export interface User {
   fullName: string;
   id: string;
+  role: Role;
 }
 
 export const removeUser = () => {
@@ -15,5 +17,5 @@ export const saveUser = (token: string) => {
 
 export const getUser = (): User => {
   const token = localStorage.getItem('token');
-  return token ? jwtDecode(token) : { fullName: '', id: '' };
+  return token ? jwtDecode(token) : { fullName: '', id: '', role: Role.User };
 };

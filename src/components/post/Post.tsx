@@ -9,10 +9,11 @@ import {
   CardActions,
   Button,
 } from '@material-ui/core';
+import axios from 'axios';
 import { SyntheticEvent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { getUser } from '../../helper/localStorage';
-import { PostRelationType } from '../../helper/shared';
+import { PostRelationType, Role } from '../../helper/shared';
 import { PostType } from '../../hooks/usePost';
 
 interface PostProps {
@@ -35,6 +36,10 @@ const Post = ({ post, large = false, createRelation, deleteRelation }: PostProps
     !!post.relations.find(
       (relation) => relation.user_id === getUser().id && relation.type === type
     );
+
+  const handleReport = async () => {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/reports/${post.id}`);
+  };
 
   return (
     <Grid item xs={large ? 12 : 4}>
@@ -60,7 +65,7 @@ const Post = ({ post, large = false, createRelation, deleteRelation }: PostProps
             {post.tags.map((user) => (
               <>
                 <Link
-                  key={user.username}
+                  key={`${post.id}-${user.username}`}
                   to={`/users/${user.username}`}
                   onClick={(e) => e.stopPropagation()}>
                   <b>@{user.username}</b>
@@ -69,7 +74,7 @@ const Post = ({ post, large = false, createRelation, deleteRelation }: PostProps
             ))}
           </Typography>
         )}
-        {!!getUser().id && createRelation && deleteRelation && (
+        {!!getUser().id && getUser().role !== Role.Admin && createRelation && deleteRelation && (
           <CardActions style={{ display: 'flex' }}>
             {hasRelation(PostRelationType.Like) ? (
               <Button
@@ -123,9 +128,11 @@ const Post = ({ post, large = false, createRelation, deleteRelation }: PostProps
                 Favorite
               </Button>
             )}
-            <Button size='small' color='secondary' variant='contained'>
-              Report
-            </Button>
+            {getUser().id !== post.user.id && (
+              <Button size='small' color='secondary' variant='contained' onClick={handleReport}>
+                Report
+              </Button>
+            )}
           </CardActions>
         )}
       </Card>

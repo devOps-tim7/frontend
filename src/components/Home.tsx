@@ -13,7 +13,7 @@ const Home = ({ userExists }: HomeProps) => {
     <Container maxWidth='sm'>
       {userExists ? (
         <>
-          <Typography variant='h5'>Posts from users you follow</Typography>
+          <Typography variant='h5'>Your feed</Typography>
           {posts.map((post: any) => (
             <Post key={post.id} post={post} large />
           ))}
