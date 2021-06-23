@@ -89,7 +89,7 @@ export const usePost = (id: string) => {
   }, [post, blockRelations, relations]);
 
   const getPost = async (id: string) => {
-    if (!getUser().id) {
+    if (!getUser().id && post.user.private) {
       setRedirect(true);
       return;
     }
