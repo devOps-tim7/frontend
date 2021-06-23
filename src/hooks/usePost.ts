@@ -84,13 +84,11 @@ export const usePost = (id: string) => {
       ).length > 0;
 
     if (blockExists || blockExistsToUser || (!followExists && post.user.private)) {
-      console.log('OVDE UPADA A NE TREBA 1');
       setRedirect(true);
     }
   }, [post, blockRelations, relations]);
 
   const getPost = async (id: string) => {
-    console.log('USER: ', getUser());
     if (!getUser().id) {
       setRedirect(true);
       return;
