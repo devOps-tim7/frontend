@@ -79,16 +79,19 @@ export const usePost = (id: string) => {
 
     const followExists =
       relations?.filter(
-        (rel: any) => rel.object.id === post.user.id && rel.type === RelationType.Follow
+        (rel: any) =>
+          rel.object.id === post.user.id && rel.type === RelationType.Follow && !rel.pending
       ).length > 0;
 
-    if (blockExists || blockExistsToUser || (followExists && post.user.private)) {
+    if (blockExists || blockExistsToUser || (!followExists && post.user.private)) {
+      console.log('OVDE UPADA A NE TREBA 1');
       setRedirect(true);
     }
   }, [post, blockRelations, relations]);
 
   const getPost = async (id: string) => {
-    if (!getUser().id && post.user.private) {
+    console.log('USER: ', getUser());
+    if (!getUser().id) {
       setRedirect(true);
       return;
     }
